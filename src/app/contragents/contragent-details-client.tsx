@@ -105,8 +105,18 @@ export default function ContragentDetailsClient({ contragent }: { contragent: Co
           <div>ИНН: {contragent.inn || '—'}</div>
           <div>КПП: {contragent.kpp || '—'}</div>
           <div>Контакт: {contragent.contactPerson || '—'}</div>
-          <div>Телефон: {contragent.phone || '—'}</div>
-          <div>Email: {contragent.email || '—'}</div>
+          <div>Телефон: {(() => {
+            try {
+              const p = JSON.parse(contragent.phone || '[]');
+              return Array.isArray(p) ? p.join(', ') : (contragent.phone || '—');
+            } catch { return contragent.phone || '—'; }
+          })()}</div>
+          <div>Email: {(() => {
+            try {
+              const e = JSON.parse(contragent.email || '[]');
+              return Array.isArray(e) ? e.join(', ') : (contragent.email || '—');
+            } catch { return contragent.email || '—'; }
+          })()}</div>
         </div>
       </Card>
 
