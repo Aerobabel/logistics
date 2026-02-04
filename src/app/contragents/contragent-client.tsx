@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useActionState, useEffect } from 'react'
+import { useState, useActionState, useEffect, useMemo } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -45,6 +45,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { createContragent } from './actions'
+import { cn } from '@/lib/utils'
 
 // Types matching Prisma
 type Contragent = {
@@ -73,6 +74,21 @@ export default function ContragentsClient({ initialContragents }: { initialContr
   const [trustRating, setTrustRating] = useState('3')
   const [phones, setPhones] = useState<string[]>([])
   const [emails, setEmails] = useState<string[]>([])
+  const [filter, setFilter] = useState('all')
+
+  const stats = useMemo(() => {
+    return {
+      clients: contragents.filter(c => c.type === 'Client').length,
+      suppliers: contragents.filter(c => c.type === 'Supplier').length,
+      contracts: contragents.reduce((acc, c) => acc + (c.contracts?.length || 0), 0)
+    }
+  }, [contragents])
+
+  const filteredContragents = useMemo(() => {
+    if (filter === 'all') return contragents
+    if (filter === 'active') return contragents.filter(c => c.status === 'active')
+    return contragents.filter(c => c.type === filter)
+  }, [contragents, filter])
 
 
   useEffect(() => {
@@ -1257,7 +1273,7 @@ export default function ContragentsClient({ initialContragents }: { initialContr
             </div>
             <div>
               <div className="text-xs text-slate-500 font-medium uppercase">Клиенты</div>
-              <div className="text-2xl font-bold text-slate-900">5</div>
+              <div className="text-2xl font-bold text-slate-900">{stats.clients}</div>
             </div>
           </div>
         </Card>
@@ -1269,7 +1285,7 @@ export default function ContragentsClient({ initialContragents }: { initialContr
             </div>
             <div>
               <div className="text-xs text-slate-500 font-medium uppercase">Поставщики</div>
-              <div className="text-2xl font-bold text-slate-900">2</div>
+              <div className="text-2xl font-bold text-slate-900">{stats.suppliers}</div>
             </div>
           </div>
         </Card>
@@ -1281,7 +1297,7 @@ export default function ContragentsClient({ initialContragents }: { initialContr
             </div>
             <div>
               <div className="text-xs text-slate-500 font-medium uppercase">Контрактов</div>
-              <div className="text-2xl font-bold text-slate-900">65</div>
+              <div className="text-2xl font-bold text-slate-900">{stats.contracts}</div>
             </div>
           </div>
         </Card>
@@ -1296,17 +1312,17 @@ export default function ContragentsClient({ initialContragents }: { initialContr
             className="border-none shadow-none pl-9 h-10 text-base"
           />
         </div>
-        <div className="flex gap-1 pr-2">
-          <Button variant="secondary" className="bg-[#E66400] text-white hover:bg-orange-700 h-8 text-sm px-4">Все</Button>
-          <Button variant="ghost" className="text-slate-600 hover:text-slate-900 h-8 text-sm px-4">Клиенты</Button>
-          <Button variant="ghost" className="text-slate-600 hover:text-slate-900 h-8 text-sm px-4">Поставщики</Button>
-          <Button variant="ghost" className="text-slate-600 hover:text-slate-900 h-8 text-sm px-4">Активные</Button>
+        <div className="flex gap-1 pr-2 flex-wrap">
+          <Button variant="ghost" onClick={() => setFilter('all')} className={cn("h-8 text-sm px-4", filter === 'all' ? "bg-[#E66400] text-white hover:bg-orange-700" : "text-slate-600 hover:text-slate-900")}>Все</Button>
+          <Button variant="ghost" onClick={() => setFilter('Client')} className={cn("h-8 text-sm px-4", filter === 'Client' ? "bg-[#E66400] text-white hover:bg-orange-700" : "text-slate-600 hover:text-slate-900")}>Клиенты</Button>
+          <Button variant="ghost" onClick={() => setFilter('Supplier')} className={cn("h-8 text-sm px-4", filter === 'Supplier' ? "bg-[#E66400] text-white hover:bg-orange-700" : "text-slate-600 hover:text-slate-900")}>Поставщики</Button>
+          <Button variant="ghost" onClick={() => setFilter('active')} className={cn("h-8 text-sm px-4", filter === 'active' ? "bg-[#E66400] text-white hover:bg-orange-700" : "text-slate-600 hover:text-slate-900")}>Активные</Button>
         </div>
       </div>
 
       {/* List */}
       <div className="space-y-4">
-        {contragents.map((agent) => (
+        {filteredContragents.map((agent) => (
           <Link href={`/contragents/${agent.id}`} key={agent.id} className="block transition-transform hover:-translate-y-1">
             <Card className="border border-slate-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer overflow-hidden group">
               <div className="p-6">

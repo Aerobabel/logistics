@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useActionState, useEffect } from 'react'
+import { useState, useActionState, useEffect, useMemo } from 'react'
 import { createManager } from './actions'
 import {
     Dialog,
@@ -51,16 +51,7 @@ export type Manager = {
     avgPrice: string | null
 }
 
-const stats = [
-    { label: 'Всего', value: '5', color: 'bg-blue-50 text-blue-600' },
-    { label: 'Активных', value: '4', color: 'bg-green-50 text-green-600' },
-    { label: 'Договоров', value: '78', color: 'bg-purple-50 text-purple-600' },
-    { label: 'Сумма', value: '500M ₽', color: 'bg-yellow-50 text-yellow-600' },
-    { label: 'Хозяйств', value: '50', color: 'bg-cyan-50 text-cyan-600' },
-    { label: 'Отгрузок', value: '628', color: 'bg-indigo-50 text-indigo-600' },
-    { label: 'ГСМ (л)', value: '17 500', color: 'bg-orange-50 text-orange-700' },
-    { label: 'Пробег', value: '63т км', color: 'bg-red-50 text-red-600' },
-]
+
 
 export default function ManagersClient({ initialManagers }: { initialManagers: Manager[] }) {
     const [view, setView] = useState<'list' | 'ratings'>('list')
@@ -73,6 +64,32 @@ export default function ManagersClient({ initialManagers }: { initialManagers: M
             setIsAddModalOpen(false)
         }
     }, [state])
+
+    const stats = useMemo(() => {
+        const total = initialManagers.length
+        const active = initialManagers.filter(m => m.status === 'Active').length
+        const contracts = initialManagers.reduce((acc, m) => acc + m.contractsCount, 0)
+        const totalSum = initialManagers.reduce((acc, m) => acc + parseFloat((m.sum || '0').replace(/\D/g, '') || '0'), 0)
+        const farms = initialManagers.reduce((acc, m) => acc + m.farmsCount, 0)
+        const shipments = initialManagers.reduce((acc, m) => acc + m.shipmentsTotal, 0)
+
+        const formatSum = (val: number) => {
+            if (val >= 1000000) return (val / 1000000).toFixed(1) + 'M ₽'
+            if (val >= 1000) return (val / 1000).toFixed(1) + 'K ₽'
+            return val + ' ₽'
+        }
+
+        return [
+            { label: 'Всего', value: total.toString(), color: 'bg-blue-50 text-blue-600' },
+            { label: 'Активных', value: active.toString(), color: 'bg-green-50 text-green-600' },
+            { label: 'Договоров', value: contracts.toString(), color: 'bg-purple-50 text-purple-600' },
+            { label: 'Сумма', value: formatSum(totalSum), color: 'bg-yellow-50 text-yellow-600' },
+            { label: 'Хозяйств', value: farms.toString(), color: 'bg-cyan-50 text-cyan-600' },
+            { label: 'Отгрузок', value: shipments.toString(), color: 'bg-indigo-50 text-indigo-600' },
+            { label: 'ГСМ (л)', value: '0', color: 'bg-orange-50 text-orange-700' }, // Not implemented
+            { label: 'Пробег', value: '0 км', color: 'bg-red-50 text-red-600' }, // Not implemented
+        ]
+    }, [initialManagers])
 
     // Sorting Logic for Ratings
     const sortedManagers = [...initialManagers].sort((a, b) => {

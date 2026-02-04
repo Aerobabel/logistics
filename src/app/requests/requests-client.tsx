@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -157,6 +157,34 @@ export default function RequestsClient({
   const invoices = initialInvoices
   const railTariffs = initialRailTariffs
   const autoTariffs = initialAutoTariffs
+
+  // Requests Stats
+  const requestStats = useMemo(() => {
+    return {
+      inTransit: requests.filter((r: any) => r.status === 'ASSIGNED').length,
+      loading: requests.filter((r: any) => r.status === 'PENDING').length,
+      delivered: requests.filter((r: any) => r.status === 'COMPLETED' || r.status === 'DELIVERED').length,
+      totalTransport: new Set(requests.map((r: any) => r.vehicle?.plate).filter(Boolean)).size
+    }
+  }, [requests])
+
+  // Invoices Stats
+  const invoiceStats = useMemo(() => {
+    return {
+      total: invoices.length,
+      drafts: invoices.filter((i: any) => i.status === 'draft').length,
+      loading: invoices.filter((i: any) => i.status === 'loading').length,
+      inTransit: invoices.filter((i: any) => i.status === 'in-transit').length
+    }
+  }, [invoices])
+
+  // Tariffs Stats
+  const tariffStats = useMemo(() => {
+    return {
+      rail: railTariffs.length,
+      auto: autoTariffs.length
+    }
+  }, [railTariffs, autoTariffs])
 
 
   // Edit/Delete State
@@ -357,7 +385,7 @@ M111AA77\tНКЛ-005\tМосква\tКраснодар\t24.5\t24.5\t34.5\t10.0\t
             <Card className="p-4 flex items-center justify-between border-slate-200 shadow-sm">
               <div>
                 <div className="text-sm text-slate-500 font-medium">В пути</div>
-                <div className="text-2xl font-bold text-slate-900 mt-1">2</div>
+                <div className="text-2xl font-bold text-slate-900 mt-1">{requestStats.inTransit}</div>
               </div>
               <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center">
                 <Truck className="w-5 h-5" />
@@ -366,7 +394,7 @@ M111AA77\tНКЛ-005\tМосква\tКраснодар\t24.5\t24.5\t34.5\t10.0\t
             <Card className="p-4 flex items-center justify-between border-slate-200 shadow-sm">
               <div>
                 <div className="text-sm text-slate-500 font-medium">На загрузке</div>
-                <div className="text-2xl font-bold text-slate-900 mt-1">1</div>
+                <div className="text-2xl font-bold text-slate-900 mt-1">{requestStats.loading}</div>
               </div>
               <div className="w-10 h-10 bg-yellow-50 text-yellow-600 rounded-lg flex items-center justify-center">
                 <Clock className="w-5 h-5" />
@@ -375,7 +403,7 @@ M111AA77\tНКЛ-005\tМосква\tКраснодар\t24.5\t24.5\t34.5\t10.0\t
             <Card className="p-4 flex items-center justify-between border-slate-200 shadow-sm">
               <div>
                 <div className="text-sm text-slate-500 font-medium">Доставлено сегодня</div>
-                <div className="text-2xl font-bold text-slate-900 mt-1">1</div>
+                <div className="text-2xl font-bold text-slate-900 mt-1">{requestStats.delivered}</div>
               </div>
               <div className="w-10 h-10 bg-green-50 text-green-600 rounded-lg flex items-center justify-center">
                 <CheckCircle2 className="w-5 h-5" />
@@ -384,7 +412,7 @@ M111AA77\tНКЛ-005\tМосква\tКраснодар\t24.5\t24.5\t34.5\t10.0\t
             <Card className="p-4 flex items-center justify-between border-slate-200 shadow-sm">
               <div>
                 <div className="text-sm text-slate-500 font-medium">Всего транспорта</div>
-                <div className="text-2xl font-bold text-slate-900 mt-1">12</div>
+                <div className="text-2xl font-bold text-slate-900 mt-1">{requestStats.totalTransport}</div>
               </div>
               <div className="w-10 h-10 bg-purple-50 text-purple-600 rounded-lg flex items-center justify-center">
                 <Truck className="w-5 h-5" />
@@ -492,19 +520,19 @@ M111AA77\tНКЛ-005\tМосква\tКраснодар\t24.5\t24.5\t34.5\t10.0\t
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <Card className="p-4 border-slate-200 shadow-sm">
               <div className="text-sm text-slate-500 font-medium">Всего</div>
-              <div className="text-2xl font-bold text-slate-900 mt-1">2</div>
+              <div className="text-2xl font-bold text-slate-900 mt-1">{invoiceStats.total}</div>
             </Card>
             <Card className="p-4 border-slate-200 shadow-sm">
               <div className="text-sm text-slate-500 font-medium">Черновики</div>
-              <div className="text-2xl font-bold text-slate-900 mt-1">0</div>
+              <div className="text-2xl font-bold text-slate-900 mt-1">{invoiceStats.drafts}</div>
             </Card>
             <Card className="p-4 border-slate-200 shadow-sm">
               <div className="text-sm text-slate-500 font-medium">На погрузке</div>
-              <div className="text-2xl font-bold text-yellow-600 mt-1">0</div>
+              <div className="text-2xl font-bold text-yellow-600 mt-1">{invoiceStats.loading}</div>
             </Card>
             <Card className="p-4 border-slate-200 shadow-sm">
               <div className="text-sm text-slate-500 font-medium">В пути</div>
-              <div className="text-2xl font-bold text-blue-600 mt-1">1</div>
+              <div className="text-2xl font-bold text-blue-600 mt-1">{invoiceStats.inTransit}</div>
             </Card>
           </div>
 
@@ -609,11 +637,11 @@ M111AA77\tНКЛ-005\tМосква\tКраснодар\t24.5\t24.5\t34.5\t10.0\t
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-purple-50/50 p-4 rounded-lg border border-purple-100">
               <div>
                 <div className="text-xs text-purple-700 font-medium">Всего маршрутов</div>
-                <div className="text-xl font-bold text-purple-900">2</div>
+                <div className="text-xl font-bold text-purple-900">{tariffStats.rail}</div>
               </div>
               <div>
                 <div className="text-xs text-blue-700 font-medium">Найдено</div>
-                <div className="text-xl font-bold text-blue-900">2</div>
+                <div className="text-xl font-bold text-blue-900">{tariffStats.rail}</div>
               </div>
             </div>
 
@@ -685,7 +713,7 @@ M111AA77\tНКЛ-005\tМосква\tКраснодар\t24.5\t24.5\t34.5\t10.0\t
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-green-50/50 p-4 rounded-lg border border-green-100">
               <div>
                 <div className="text-xs text-blue-700 font-medium">Всего тарифов</div>
-                <div className="text-xl font-bold text-blue-900">4</div>
+                <div className="text-xl font-bold text-blue-900">{tariffStats.auto}</div>
               </div>
               <div>
                 <div className="text-xs text-green-700 font-medium">Макс. расстояние</div>
@@ -693,7 +721,7 @@ M111AA77\tНКЛ-005\tМосква\tКраснодар\t24.5\t24.5\t34.5\t10.0\t
               </div>
               <div>
                 <div className="text-xs text-purple-700 font-medium">Найдено</div>
-                <div className="text-xl font-bold text-purple-900">4</div>
+                <div className="text-xl font-bold text-purple-900">{tariffStats.auto}</div>
               </div>
             </div>
 
