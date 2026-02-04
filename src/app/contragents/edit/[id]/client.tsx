@@ -287,7 +287,7 @@ export default function EditContragentClient({ contragent }: { contragent: any }
                         )}
 
                         {/* BASIC TAB */}
-                        {activeTab === 'basic' && (
+                        <div className={activeTab === 'basic' ? 'block' : 'hidden'}>
                             <div className="max-w-3xl space-y-8">
                                 <div className="space-y-4">
                                     <h3 className="text-lg font-semibold text-slate-900">Тип контрагента</h3>
@@ -417,10 +417,10 @@ export default function EditContragentClient({ contragent }: { contragent: any }
                                     <Textarea name="comment" defaultValue={contragent.comment || ''} className="min-h-[100px] bg-slate-50 border-slate-200 focus:bg-white" />
                                 </div>
                             </div>
-                        )}
+                        </div>
 
                         {/* ADDRESSES TAB */}
-                        {activeTab === 'addresses' && (
+                        <div className={activeTab === 'addresses' ? 'block' : 'hidden'}>
                             <div className="max-w-3xl space-y-6">
                                 <div className="flex justify-between items-center">
                                     <h3 className="text-lg font-semibold">Адреса компании</h3>
@@ -484,10 +484,10 @@ export default function EditContragentClient({ contragent }: { contragent: any }
                                     )}
                                 </div>
                             </div>
-                        )}
+                        </div>
 
                         {/* BANK TAB */}
-                        {activeTab === 'bank' && (
+                        <div className={activeTab === 'bank' ? 'block' : 'hidden'}>
                             <div className="max-w-3xl space-y-6">
                                 <div className="flex justify-between items-center">
                                     <h3 className="text-lg font-semibold">Банковские реквизиты</h3>
@@ -538,10 +538,10 @@ export default function EditContragentClient({ contragent }: { contragent: any }
                                     )}
                                 </div>
                             </div>
-                        )}
+                        </div>
 
                         {/* EMPLOYEES TAB */}
-                        {activeTab === 'employees' && (
+                        <div className={activeTab === 'employees' ? 'block' : 'hidden'}>
                             <div className="max-w-3xl space-y-6">
                                 <div className="flex justify-between items-center">
                                     <h3 className="text-lg font-semibold">Сотрудники</h3>
@@ -597,7 +597,7 @@ export default function EditContragentClient({ contragent }: { contragent: any }
                                     )}
                                 </div>
                             </div>
-                        )}
+                        </div>
 
                     </div>
                 </div>
