@@ -20,9 +20,9 @@ export default function LoginPage() {
                             <span className="text-2xl font-bold text-white">Z</span>
                         </div>
                     </div>
-                    <CardTitle className="text-2xl font-bold text-slate-900">ZernoLab Logistics</CardTitle>
+                    <CardTitle className="text-2xl font-bold text-slate-900">ZernoLab Логистика</CardTitle>
                     <CardDescription>
-                        Enter your credentials to access the workspace
+                        Введите учетные данные для входа в систему
                     </CardDescription>
                 </CardHeader>
                 <form action={formAction}>
@@ -46,7 +46,7 @@ export default function LoginPage() {
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="password">Password</Label>
+                            <Label htmlFor="password">Пароль</Label>
                             <Input
                                 id="password"
                                 name="password"
@@ -59,12 +59,12 @@ export default function LoginPage() {
                     </CardContent>
                     <CardFooter>
                         <Button type="submit" className="w-full bg-[#E66400] hover:bg-orange-700 text-white font-medium">
-                            Sign In
+                            Войти
                         </Button>
                     </CardFooter>
                 </form>
                 <div className="p-6 pt-0 text-center text-xs text-slate-500">
-                    Protected by ZernoLab Security
+                    Защищено системой безопасности ZernoLab
                 </div>
             </Card>
         </div>
