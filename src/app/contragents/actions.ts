@@ -141,6 +141,16 @@ export async function updateContragent(id: number, prevState: any, formData: For
             addresses: parseAndMap(addressesStr),
             bankAccounts: parseAndMap(bankAccountsStr),
             employees: parseAndMap(employeesStr),
+            address: (() => {
+                try {
+                    const parsed = JSON.parse(addressesStr);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        const a = parsed[0];
+                        return [a.zip, a.country, a.city, a.street, a.house].filter(Boolean).join(', ');
+                    }
+                } catch { }
+                return null;
+            })(),
         }
 
         await prisma.counterparty.update({

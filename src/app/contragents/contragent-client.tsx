@@ -1393,14 +1393,28 @@ export default function ContragentsClient({ initialContragents }: { initialContr
                     <div className="mt-1"><Phone className="w-4 h-4 text-slate-400" /></div>
                     <div>
                       <div className="text-xs text-slate-400 font-medium mb-0.5">Телефон</div>
-                      <div className="text-sm font-medium text-slate-900">{agent.phone || '-'}</div>
+                      <div className="text-sm font-medium text-slate-900">
+                        {(() => {
+                          try {
+                            const p = JSON.parse(agent.phone || '[]');
+                            return Array.isArray(p) && p.length ? p.join(', ') : (agent.phone || '-');
+                          } catch { return agent.phone || '-'; }
+                        })()}
+                      </div>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <div className="mt-1"><Mail className="w-4 h-4 text-slate-400" /></div>
                     <div>
                       <div className="text-xs text-slate-400 font-medium mb-0.5">Email</div>
-                      <div className="text-sm font-medium text-slate-900">{agent.email || '-'}</div>
+                      <div className="text-sm font-medium text-slate-900">
+                        {(() => {
+                          try {
+                            const e = JSON.parse(agent.email || '[]');
+                            return Array.isArray(e) && e.length ? e.join(', ') : (agent.email || '-');
+                          } catch { return agent.email || '-'; }
+                        })()}
+                      </div>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
