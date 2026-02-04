@@ -79,11 +79,26 @@ export default function ContragentDetailsClient({ contragent }: { contragent: Co
           <div className="flex gap-2 items-center">
             <Link href={`/contragents/edit/${contragent.id}`}>
               <Button variant="outline" size="sm" className="h-6 gap-2 text-xs">
-                Edit
+                Редактировать
               </Button>
             </Link>
-            <Badge variant="secondary" className="bg-slate-100 text-slate-700">{contragent.type}</Badge>
-            <Badge variant="outline" className="text-green-600 border-green-200 bg-green-50">{contragent.status}</Badge>
+            <Badge variant="secondary" className="bg-slate-100 text-slate-700">
+              {{
+                'Client': 'Клиент',
+                'Supplier': 'Поставщик',
+                'Carrier': 'Перевозчик'
+              }[contragent.type] || contragent.type}
+            </Badge>
+            <Badge variant="outline" className="text-green-600 border-green-200 bg-green-50">
+              {{
+                'active': 'Активный',
+                'ACTIVE': 'Активный',
+                'inactive': 'Неактивный',
+                'INACTIVE': 'Неактивный',
+                'blocked': 'Заблокирован',
+                'BLOCKED': 'Заблокирован'
+              }[contragent.status] || contragent.status}
+            </Badge>
           </div>
         </div>
         <div className="grid grid-cols-3 gap-4 mt-6 text-sm text-slate-600">
@@ -139,7 +154,13 @@ export default function ContragentDetailsClient({ contragent }: { contragent: Co
               {(contragent.addresses || []).map((addr: any) => (
                 <div key={addr.id} className="flex items-center justify-between p-3 border border-slate-200 rounded-lg">
                   <div>
-                    <div className="text-xs text-slate-400">{addr.type}</div>
+                    <div className="text-xs text-slate-400">
+                      {{
+                        'legal': 'Юридический',
+                        'actual': 'Фактический',
+                        'postal': 'Почтовый'
+                      }[addr.type] || addr.type}
+                    </div>
                     <div className="font-medium">{[addr.city, addr.street, addr.house].filter(Boolean).join(', ') || '—'}</div>
                   </div>
                   <form action={deleteCounterpartyAddress.bind(null, addr.id, contragent.id)}>

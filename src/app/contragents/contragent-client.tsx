@@ -1345,10 +1345,21 @@ export default function ContragentsClient({ initialContragents }: { initialContr
                       <div className="flex items-center gap-3 mb-1">
                         <h3 className="text-xl font-bold text-slate-900 group-hover:text-[#E66400] transition-colors">{agent.name}</h3>
                         <Badge variant="secondary" className="bg-blue-100 text-blue-700 hover:bg-blue-200 border-none font-normal">
-                          {agent.type}
+                          {{
+                            'Client': 'Клиент',
+                            'Supplier': 'Поставщик',
+                            'Carrier': 'Перевозчик'
+                          }[agent.type] || agent.type}
                         </Badge>
                         <Badge variant="outline" className="text-green-600 border-green-200 bg-green-50 font-normal">
-                          {agent.status}
+                          {{
+                            'active': 'Активный',
+                            'ACTIVE': 'Активный',
+                            'inactive': 'Неактивный',
+                            'INACTIVE': 'Неактивный',
+                            'blocked': 'Заблокирован',
+                            'BLOCKED': 'Заблокирован'
+                          }[agent.status] || agent.status}
                         </Badge>
                       </div>
                       <div className="flex items-center gap-4 text-sm text-slate-500">
