@@ -31,7 +31,7 @@ export function Sidebar() {
   if (pathname === '/login') return null
 
   return (
-    <div className="flex flex-col h-full w-64 bg-[#E66400] shrink-0">
+    <div className="hidden md:flex flex-col h-full w-64 bg-[#E66400] shrink-0">
       <div className="px-6 py-8">
         <Link href="/" className="flex items-center gap-3 group">
           <div className="relative w-10 h-10 flex items-center justify-center bg-white rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300 transform group-hover:scale-105">

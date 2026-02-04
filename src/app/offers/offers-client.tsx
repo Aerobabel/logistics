@@ -75,7 +75,7 @@ export default function OffersClient({ initialOffers }: { initialOffers: Offer[]
         <p className="text-slate-500 mt-1">Управляйте заявками фермеров и согласованием условий.</p>
       </div>
 
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="p-4 flex items-center justify-between border-slate-200 shadow-sm">
           <div>
             <div className="text-sm text-slate-500 font-medium">Всего заявок</div>
@@ -114,7 +114,7 @@ export default function OffersClient({ initialOffers }: { initialOffers: Offer[]
         </Card>
       </div>
 
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <Input
@@ -168,7 +168,7 @@ export default function OffersClient({ initialOffers }: { initialOffers: Offer[]
           </div>
 
           <form action={formAction} className="space-y-6">
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label>Фермер (контрагент) *</Label>
                 <Input name="farmer" placeholder="Название контрагента" required />
@@ -264,29 +264,29 @@ export default function OffersClient({ initialOffers }: { initialOffers: Offer[]
                 <User className="w-3 h-3" /> {offer.manager || '-'} - <Calendar className="w-3 h-3" /> {new Date(offer.date).toLocaleDateString()}
               </div>
 
-              <div className="grid grid-cols-12 gap-4">
-                <div className="col-span-3 p-3 bg-orange-50/50 rounded-lg border border-orange-100">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 gap-4">
+                <div className="md:col-span-3 p-3 bg-orange-50/50 rounded-lg border border-orange-100">
                   <div className="flex items-center gap-2 mb-1">
                     <div className="w-1.5 h-1.5 rounded-full bg-orange-400" />
                     <span className="text-xs font-bold text-orange-800 uppercase">Продукт</span>
                   </div>
                   <div className="font-medium text-slate-900">{offer.product || '-'}</div>
                 </div>
-                <div className="col-span-2 p-3 bg-blue-50/50 rounded-lg border border-blue-100">
+                <div className="md:col-span-2 p-3 bg-blue-50/50 rounded-lg border border-blue-100">
                   <div className="flex items-center gap-2 mb-1">
                     <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />
                     <span className="text-xs font-bold text-blue-800 uppercase">Объем</span>
                   </div>
                   <div className="font-medium text-slate-900">{offer.quantity || '-'}</div>
                 </div>
-                <div className="col-span-4 p-3 bg-slate-50 rounded-lg border border-slate-100">
+                <div className="md:col-span-4 p-3 bg-slate-50 rounded-lg border border-slate-100">
                   <div className="flex items-center gap-2 mb-1">
                     <MapPin className="w-3 h-3 text-slate-400" />
                     <span className="text-xs font-bold text-slate-500 uppercase">Погрузка</span>
                   </div>
                   <div className="text-sm text-slate-700">{offer.loadingAddress || '-'}</div>
                 </div>
-                <div className="col-span-3 p-3 bg-slate-50 rounded-lg border border-slate-100">
+                <div className="md:col-span-3 p-3 bg-slate-50 rounded-lg border border-slate-100">
                   <div className="flex items-center gap-2 mb-1">
                     <MapPin className="w-3 h-3 text-slate-400" />
                     <span className="text-xs font-bold text-slate-500 uppercase">Выгрузка</span>
@@ -309,7 +309,7 @@ export default function OffersClient({ initialOffers }: { initialOffers: Offer[]
               </div>
             </div>
 
-            <div className="p-4 bg-slate-50 border-t border-slate-200 rounded-b-lg flex gap-3 items-center">
+            <div className="p-4 bg-slate-50 border-t border-slate-200 rounded-b-lg flex flex-wrap gap-3 items-center">
               <form action={updateOfferStatus.bind(null, offer.id, 'approved')}>
                 <Button className="bg-[#22C55E] hover:bg-green-600 text-white gap-2 h-9" type="submit">
                   <CheckCircle2 className="w-4 h-4" /> Одобрить

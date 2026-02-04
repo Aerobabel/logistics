@@ -145,7 +145,7 @@ export default function ManagersClient({ initialManagers }: { initialManagers: M
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-8 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
                 {stats.map((stat, i) => (
                     <Card key={i} className={cn("p-4 border-none shadow-sm flex flex-col justify-center", stat.color)}>
                         <div className="text-xs opacity-70 font-medium mb-1">{stat.label}</div>
@@ -169,8 +169,8 @@ export default function ManagersClient({ initialManagers }: { initialManagers: M
 
             {/* Content */}
             {view === 'list' ? (
-                <Card className="border-slate-200 overflow-hidden shadow-sm">
-                    <table className="w-full text-sm text-left">
+                <Card className="border-slate-200 overflow-hidden shadow-sm overflow-x-auto">
+                    <table className="w-full text-sm text-left min-w-[800px]">
                         <thead className="bg-slate-50 border-b border-slate-200 text-slate-500">
                             <tr>
                                 <th className="px-6 py-4 font-medium w-[30%]">Менеджер</th>
@@ -249,7 +249,7 @@ export default function ManagersClient({ initialManagers }: { initialManagers: M
                 <div className="space-y-6">
                     <div className="space-y-3">
                         <h3 className="font-bold text-slate-900 ml-1">Выберите критерий оценки</h3>
-                        <div className="grid grid-cols-4 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                             <CriteriaButton
                                 active={ratingCriteria === 'plan'}
                                 onClick={() => setRatingCriteria('plan')}
@@ -283,7 +283,7 @@ export default function ManagersClient({ initialManagers }: { initialManagers: M
                         </div>
                     </div>
 
-                    <Card className="border-slate-200 overflow-hidden shadow-sm">
+                    <Card className="border-slate-200 overflow-hidden shadow-sm overflow-x-auto">
                         <div className="px-6 py-4 bg-slate-50 border-b border-slate-200 font-bold text-slate-700">
                             Рейтинг менеджеров по критерию: <span className="text-slate-900">{
                                 ratingCriteria === 'plan' ? 'Выполнение плана' :
@@ -293,7 +293,7 @@ export default function ManagersClient({ initialManagers }: { initialManagers: M
                                                 ratingCriteria === 'volume' ? 'Объем товара' : 'Средняя цена'
                             }</span>
                         </div>
-                        <table className="w-full text-sm text-left">
+                        <table className="w-full text-sm text-left min-w-[600px]">
                             <thead className="bg-slate-50 border-b border-slate-200 text-slate-500">
                                 <tr>
                                     <th className="px-6 py-4 font-medium w-[40%]">Менеджер</th>

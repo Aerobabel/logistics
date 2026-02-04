@@ -22,7 +22,7 @@ export default async function AnalyticsPage() {
         <p className="text-slate-500 mt-1">Ключевые показатели и последние операции.</p>
       </div>
 
-      <div className="grid grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card className="p-6 border-slate-200 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
@@ -61,7 +61,7 @@ export default async function AnalyticsPage() {
         </Card>
       </div>
 
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card className="p-6 border-slate-200 shadow-sm">
           <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
             <Users className="w-5 h-5 text-orange-500" />

@@ -353,7 +353,7 @@ M111AA77\tНКЛ-005\tМосква\tКраснодар\t24.5\t24.5\t34.5\t10.0\t
 
         {/* General Logistics Tab */}
         <TabsContent value="general" className="space-y-6 mt-0">
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <Card className="p-4 flex items-center justify-between border-slate-200 shadow-sm">
               <div>
                 <div className="text-sm text-slate-500 font-medium">В пути</div>
@@ -421,7 +421,7 @@ M111AA77\tНКЛ-005\tМосква\tКраснодар\t24.5\t24.5\t34.5\t10.0\t
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-8 mb-6 bg-slate-50 p-4 rounded-lg">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6 bg-slate-50 p-4 rounded-lg">
                   <div className="relative">
                     <div className="font-medium text-slate-900 mb-1 flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full bg-green-500" />
@@ -489,7 +489,7 @@ M111AA77\tНКЛ-005\tМосква\tКраснодар\t24.5\t24.5\t34.5\t10.0\t
 
         {/* Invoices Tab */}
         <TabsContent value="invoices" className="space-y-6 mt-0">
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <Card className="p-4 border-slate-200 shadow-sm">
               <div className="text-sm text-slate-500 font-medium">Всего</div>
               <div className="text-2xl font-bold text-slate-900 mt-1">2</div>
@@ -606,7 +606,7 @@ M111AA77\tНКЛ-005\tМосква\tКраснодар\t24.5\t24.5\t34.5\t10.0\t
             </div>
             <p className="text-sm text-slate-500 -mt-3">Управление тарифами для железнодорожных перевозок</p>
 
-            <div className="grid grid-cols-2 gap-4 bg-purple-50/50 p-4 rounded-lg border border-purple-100">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-purple-50/50 p-4 rounded-lg border border-purple-100">
               <div>
                 <div className="text-xs text-purple-700 font-medium">Всего маршрутов</div>
                 <div className="text-xl font-bold text-purple-900">2</div>
@@ -682,7 +682,7 @@ M111AA77\tНКЛ-005\tМосква\tКраснодар\t24.5\t24.5\t34.5\t10.0\t
             </div>
             <p className="text-sm text-slate-500 -mt-3">Управление тарифами на автомобильные перевозки (каждые 50 км)</p>
 
-            <div className="grid grid-cols-3 gap-4 bg-green-50/50 p-4 rounded-lg border border-green-100">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-green-50/50 p-4 rounded-lg border border-green-100">
               <div>
                 <div className="text-xs text-blue-700 font-medium">Всего тарифов</div>
                 <div className="text-xl font-bold text-blue-900">4</div>
@@ -792,7 +792,7 @@ M111AA77\tНКЛ-005\tМосква\tКраснодар\t24.5\t24.5\t34.5\t10.0\t
               </div>
 
               {showRegistryStats && (
-                <div className="grid grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   <Card className="p-4 bg-blue-50 border-blue-100 shadow-sm">
                     <div className="text-xs text-blue-700 font-medium mb-1">Всего записей</div>
                     <div className="text-2xl font-bold text-blue-900">{totalRecords}</div>
