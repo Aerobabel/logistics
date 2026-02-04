@@ -125,7 +125,7 @@ export async function updateContragent(id: number, prevState: any, formData: For
                 if (!Array.isArray(arr)) return undefined
                 return {
                     deleteMany: {}, // Clear existing and replace
-                    create: arr.map(({ id, ...rest }: any) => rest)
+                    create: arr.map(({ id, counterpartyId, createdAt, ...rest }: any) => rest)
                 }
             } catch (e) { return undefined }
         }
@@ -157,7 +157,7 @@ export async function updateContragent(id: number, prevState: any, formData: For
                     if (!Array.isArray(arr)) return undefined
                     return {
                         deleteMany: {},
-                        create: arr.map(({ id, bic, currency, ...rest }: any) => ({
+                        create: arr.map(({ id, bic, currency, counterpartyId, createdAt, ...rest }: any) => ({
                             ...rest,
                             bik: bic, // Rename bic to bik
                         }))
