@@ -109,6 +109,22 @@ export async function createContract(prevState: any, formData: FormData) {
     }
 
     await prisma.contract.create({ data: rawData })
+
+    // Update manager stats if manager is selected
+    if (rawData.manager) {
+      const manager = await prisma.manager.findFirst({
+        where: { name: rawData.manager }
+      })
+      if (manager) {
+        await prisma.manager.update({
+          where: { id: manager.id },
+          data: {
+            contractsCount: { increment: 1 }
+          }
+        })
+      }
+    }
+
     revalidatePath('/contracts')
     return { success: true }
   } catch (error) {
