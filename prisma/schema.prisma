@@ -1,0 +1,498 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_PRISMA_URL") // Vercel Postgres Connection String
+  directUrl = env("POSTGRES_URL_NON_POOLING") // Direct connection for migrations
+}
+
+model Request {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  date        DateTime // Date of loading
+  cargo       String
+  weight      Float?
+  routeFrom   String
+  routeTo     String
+  status      String   @default("PENDING") // PENDING, ASSIGNED, COMPLETED, IN_REGISTRY
+  
+  clientName  String?
+  cost        Float?
+  
+  // Relations
+  registryId  Int?
+  registry    Registry? @relation(fields: [registryId], references: [id])
+  
+  vehicleId   Int?
+  vehicle     Vehicle? @relation(fields: [vehicleId], references: [id])
+}
+
+model Registry {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now())
+  status      String    @default("DRAFT") // DRAFT, SENT, PAID
+  number      String?   // Manual registry number if needed
+  
+  requests    Request[]
+}
+
+model Vehicle {
+  id          Int       @id @default(autoincrement())
+  plate       String    @unique
+  driver      String?
+  status      String    @default("AVAILABLE")
+  type        String?   // Truck type
+  
+  requests    Request[]
+}
+
+model Counterparty {
+  id          Int       @id @default(autoincrement())
+  name        String
+  inn         String?   @unique
+  kpp         String?
+  address     String?
+  status      String    @default("ACTIVE") // ACTIVE, BLOCKED, CHECKING
+  trustRating Int       @default(100)
+  
+  // Contact Info
+  phone       String?
+  email       String?
+  contactPerson String?
+  type        String    @default("Client") // Client, Supplier, Carrier
+  
+  contracts   Contract[]
+  addresses   CounterpartyAddress[]
+  bankAccounts CounterpartyBankAccount[]
+  employees   CounterpartyEmployee[]
+  transports  CounterpartyTransport[]
+  declarations CounterpartyDeclaration[]
+  scans       CounterpartyScan[]
+  history     CounterpartyHistory[]
+}
+
+model Contract {
+  id              Int           @id @default(autoincrement())
+  number          String        @unique
+  date            DateTime
+  amount          Float
+  status          String        @default("ACTIVE") // ACTIVE, COMPLETED, TERMINATED
+  
+  counterpartyId  Int
+  counterparty    Counterparty  @relation(fields: [counterpartyId], references: [id])
+
+  type            String?
+  product         String?
+  counterpartyRole String?
+  periodFrom      DateTime?
+  periodTo        DateTime?
+  manager         String?
+  managerSigned   DateTime?
+  basis           String?
+  hsCode          String?
+  year            String?
+  sellerName      String?
+  buyerName       String?
+  deliveryFrom    String?
+  deliveryTo      String?
+  paymentDays     Int?
+  prepayment      Float?
+  cost            Float?
+  currency        String?
+  amountTons      Float?
+  tolerance       Float?
+
+  protein         String?
+  gluten          String?
+  idk             String?
+  fallingNumber   String?
+  oil             String?
+  moisture        String?
+  nature          String?
+  grainAdmixture  String?
+  trashAdmixture  String?
+  bug             String?
+  acidity         String?
+  qualityComment  String?
+
+  addresses       ContractAddress[]
+  invoices        ContractInvoice[]
+  acts            ContractAct[]
+  scans           ContractScan[]
+  history         ContractHistory[]
+}
+
+model Manager {
+  id            Int      @id @default(autoincrement())
+  name          String
+  role          String
+  avatar        String?  // Initials e.g. "II"
+  avatarColor   String?  // Class name e.g. "bg-orange-400"
+  status        String   @default("Active") // Active, Vacation
+  
+  // Stats
+  contractsCount Int      @default(0)
+  tonnage        Float    @default(0)
+  farmsCount     Int      @default(0)
+  shipmentsTotal Int      @default(0)
+  shipmentsActive Int     @default(0)
+  efficiency     Int      @default(100)
+  rating         Float    @default(5.0)
+  planExecution  Int      @default(100)
+  sum            String?  // e.g. "125.0M ₽" - simpler to store as string for mock/display or Float for real math
+  avgPrice       String?  // e.g. "16 500 ₽"
+}
+
+model Document {
+  id          Int      @id @default(autoincrement())
+  number      String
+  date        DateTime
+  type        String   // ACT, TORG12, UPD
+  sum         Float
+  status      String   @default("DRAFT") // DRAFT, SIGNED, PAID, ARCHIVED
+  
+  carrierName String?
+  route       String?
+  weight      Float?
+  edoStatus   String?
+}
+
+model ActionItem {
+  id          Int      @id @default(autoincrement())
+  title       String
+  date        DateTime @default(now())
+  amount      String?
+  status      String   // e.g. "Completed", "In Transit"
+  type        String   // INCOMING, OUTGOING
+}
+
+model CounterpartyAddress {
+  id            Int      @id @default(autoincrement())
+  counterpartyId Int
+  type          String
+  country       String?
+  zip           String?
+  region        String?
+  city          String?
+  street        String?
+  house         String?
+  apartment     String?
+  comment       String?
+  createdAt     DateTime @default(now())
+
+  counterparty  Counterparty @relation(fields: [counterpartyId], references: [id], onDelete: Cascade)
+}
+
+model CounterpartyBankAccount {
+  id            Int      @id @default(autoincrement())
+  counterpartyId Int
+  bankName      String
+  bik           String?
+  correspondentAccount String?
+  checkingAccount String?
+  comment       String?
+  isMain        Boolean  @default(false)
+  createdAt     DateTime @default(now())
+
+  counterparty  Counterparty @relation(fields: [counterpartyId], references: [id], onDelete: Cascade)
+}
+
+model CounterpartyEmployee {
+  id            Int      @id @default(autoincrement())
+  counterpartyId Int
+  fullName      String
+  position      String?
+  phone         String?
+  email         String?
+  roles         String?
+  passport      String?
+  poaDate       DateTime?
+  dlExpiry      DateTime?
+  contractFrom  DateTime?
+  contractTo    DateTime?
+  createdAt     DateTime @default(now())
+
+  counterparty  Counterparty @relation(fields: [counterpartyId], references: [id], onDelete: Cascade)
+  documents     CounterpartyEmployeeDocument[]
+}
+
+model CounterpartyEmployeeDocument {
+  id          Int      @id @default(autoincrement())
+  employeeId  Int
+  title       String
+  date        DateTime?
+  active      Boolean  @default(true)
+  fileUrl     String?
+  createdAt   DateTime @default(now())
+
+  employee    CounterpartyEmployee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+}
+
+model CounterpartyTransport {
+  id            Int      @id @default(autoincrement())
+  counterpartyId Int
+  type          String
+  brand         String?
+  model         String?
+  plate         String
+  capacity      String?
+  year          Int?
+  vin           String?
+  color         String?
+  fuel          String?
+  driverName    String?
+  driverPhone   String?
+  createdAt     DateTime @default(now())
+
+  counterparty  Counterparty @relation(fields: [counterpartyId], references: [id], onDelete: Cascade)
+  documents     CounterpartyTransportDocument[]
+}
+
+model CounterpartyTransportDocument {
+  id            Int      @id @default(autoincrement())
+  transportId   Int
+  title         String
+  date          DateTime?
+  active        Boolean  @default(true)
+  fileUrl       String?
+  createdAt     DateTime @default(now())
+
+  transport     CounterpartyTransport @relation(fields: [transportId], references: [id], onDelete: Cascade)
+}
+
+model CounterpartyDeclaration {
+  id            Int      @id @default(autoincrement())
+  counterpartyId Int
+  number        String
+  date          DateTime?
+  product       String?
+  weight        String?
+  validUntil    DateTime?
+  status        String?
+
+  regDate       DateTime?
+  startDate     DateTime?
+  endDate       DateTime?
+  tnVed         String?
+  protocol      String?
+  lotVolume     String?
+  declarant     String?
+  applicant     String?
+  producer      String?
+  certificationBody String?
+  productionPlace String?
+  storagePlace  String?
+  createdAt     DateTime @default(now())
+
+  counterparty  Counterparty @relation(fields: [counterpartyId], references: [id], onDelete: Cascade)
+  documents     CounterpartyDeclarationDocument[]
+}
+
+model CounterpartyDeclarationDocument {
+  id            Int      @id @default(autoincrement())
+  declarationId Int
+  title         String
+  date          DateTime?
+  active        Boolean  @default(true)
+  fileUrl       String?
+  createdAt     DateTime @default(now())
+
+  declaration   CounterpartyDeclaration @relation(fields: [declarationId], references: [id], onDelete: Cascade)
+}
+
+model CounterpartyScan {
+  id            Int      @id @default(autoincrement())
+  counterpartyId Int
+  title         String
+  filename      String?
+  date          DateTime?
+  active        Boolean  @default(true)
+  type          String?
+  fileUrl       String?
+  createdAt     DateTime @default(now())
+
+  counterparty  Counterparty @relation(fields: [counterpartyId], references: [id], onDelete: Cascade)
+}
+
+model CounterpartyHistory {
+  id            Int      @id @default(autoincrement())
+  counterpartyId Int
+  date          DateTime @default(now())
+  type          String?
+  product       String?
+  status        String?
+  description   String?
+
+  counterparty  Counterparty @relation(fields: [counterpartyId], references: [id], onDelete: Cascade)
+}
+
+model ContractAddress {
+  id          Int      @id @default(autoincrement())
+  contractId  Int
+  type        String
+  value       String
+  createdAt   DateTime @default(now())
+
+  contract    Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+}
+
+model ContractInvoice {
+  id            Int      @id @default(autoincrement())
+  contractId    Int
+  number        String
+  date          DateTime?
+  type          String?
+  status        String?
+  product       String?
+  sentDate      DateTime?
+  arrivedDate   DateTime?
+  loadingAddress String?
+  unloadingAddress String?
+  carrier       String?
+  carNumber     String?
+  trailerNumber String?
+  driver        String?
+  weightSentGross   String?
+  weightSentTare    String?
+  weightSentNet     String?
+  weightReceivedGross String?
+  weightReceivedTare  String?
+  weightReceivedNet   String?
+  weightDiff     String?
+  templatesCount Int?
+  scansCount     Int?
+  actsCount      Int?
+  createdAt      DateTime @default(now())
+
+  contract      Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+}
+
+model ContractAct {
+  id          Int      @id @default(autoincrement())
+  contractId  Int
+  name        String
+  date        DateTime?
+  amount      String?
+  status      String?
+  createdAt   DateTime @default(now())
+
+  contract    Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+}
+
+model ContractScan {
+  id          Int      @id @default(autoincrement())
+  contractId  Int
+  name        String
+  type        String?
+  date        DateTime?
+  fileUrl     String?
+  createdAt   DateTime @default(now())
+
+  contract    Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+}
+
+model ContractHistory {
+  id          Int      @id @default(autoincrement())
+  contractId  Int
+  action      String
+  user        String?
+  description String?
+  date        DateTime @default(now())
+
+  contract    Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+}
+
+model Offer {
+  id            Int      @id @default(autoincrement())
+  farmer        String
+  status        String
+  date          DateTime
+  manager       String?
+  product       String?
+  quantity      String?
+  price         String?
+  loadingAddress String?
+  deliveryAddress String?
+  quality       String?
+  note          String?
+  isArchived    Boolean @default(false)
+  createdAt     DateTime @default(now())
+}
+
+model Report {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  category    String
+  icon        String?
+  color       String?
+  createdAt   DateTime @default(now())
+}
+
+model LogisticsInvoice {
+  id        Int      @id @default(autoincrement())
+  number    String
+  type      String
+  status    String
+  product   String?
+  carrier   String?
+  transport String?
+  netto     String?
+  diff      String?
+  date      DateTime?
+  createdAt DateTime @default(now())
+}
+
+model RailTariff {
+  id         Int      @id @default(autoincrement())
+  departure  String
+  depCode    String?
+  destination String
+  destCode   String?
+  tariff     String?
+  date       DateTime?
+  createdAt  DateTime @default(now())
+}
+
+model AutoTariff {
+  id         Int      @id @default(autoincrement())
+  distance   String
+  coefficient String?
+  price      String?
+  priceKm    String?
+  date       DateTime?
+  createdAt  DateTime @default(now())
+}
+
+model RegistryImportRow {
+  id         Int      @id @default(autoincrement())
+  transport  String?
+  invoice    String?
+  sender     String?
+  receiver   String?
+  shipped    String?
+  accepted   String?
+  shortage   String?
+  brutto     String?
+  tare       String?
+  netto      String?
+  dateSent   DateTime?
+  dateRecv   DateTime?
+  downtime   Int?
+  createdAt  DateTime @default(now())
+}
+
+model LoadingRegistryItem {
+  id        Int      @id @default(autoincrement())
+  point     String
+  auto      String
+  driver    String?
+  company   String?
+  date      DateTime?
+  time      String?
+  createdAt DateTime @default(now())
+}
