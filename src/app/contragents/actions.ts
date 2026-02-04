@@ -53,26 +53,24 @@ export async function createContragent(prevState: any, formData: FormData) {
             }
         }
 
+        const getStr = (key: string) => {
+            const val = formData.get(key) as string
+            return val && val.trim() !== '' ? val : null
+        }
+
         const rawData = {
             name: formData.get('name') as string,
             type: formData.get('type') as string,
             status: formData.get('status') as string || 'ACTIVE',
-            inn: formData.get('inn') as string,
-            kpp: formData.get('kpp') as string,
-            // okpo: formData.get('okpo') as string, // Not in schema?
-            // ogrn: formData.get('ogrn') as string, // Not in schema?
-            // regNumber: formData.get('regNumber') as string, // Not in schema?
-            // The schema only has: name, inn, kpp, address, status, trustRating, phone, email, contactPerson, type
-            // It seems "ogrn", "okpo" might be missing from schema or mapped to other fields?
-            // Checking schema: Counterparty has `inn`, `kpp`, `address`, `phone`, `email`, `contactPerson`, `type`.
-            // Missing `okpo`, `ogrn`. Detailed fields might be in `address` or ignored for now.
-            // We will stick to schema fields to avoid errors.
+            inn: getStr('inn'),
+            kpp: getStr('kpp'),
+            // okpo: getStr('okpo'),
+            // ogrn: getStr('ogrn'),
+            // regNumber: getStr('regNumber'),
 
-            phone: formData.get('phone') as string,
-            email: formData.get('email') as string,
-            // edo: formData.get('edo') as string,
-            // manager: formData.get('manager') as string, // Not in schema relation? 
-            // comment: formData.get('comment') as string, // Not in schema?
+            phone: getStr('phone'),
+            email: getStr('email'),
+
             trustRating: parseInt(formData.get('trustRating') as string || '3'),
 
             addresses: {
@@ -90,16 +88,14 @@ export async function createContragent(prevState: any, formData: FormData) {
             declarations: {
                 create: parseAndMap(declarationsStr)
             },
-            // scans: { create: [] },
-            // history: { create: [] },
         }
 
         await prisma.counterparty.create({ data: rawData })
         revalidatePath('/contragents')
         return { success: true, message: 'Counterparty created successfully' }
-    } catch (error) {
+    } catch (error: any) {
         console.error('Create error:', error)
-        return { success: false, error: 'Failed to create contragent' }
+        return { success: false, error: error.message || 'Failed to create contragent' }
     }
 }
 

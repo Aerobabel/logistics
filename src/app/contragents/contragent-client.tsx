@@ -41,7 +41,8 @@ import {
   Calendar,
   Paperclip,
   Truck,
-  CheckCircle2
+  CheckCircle2,
+  XCircle
 } from 'lucide-react'
 import Link from 'next/link'
 import { createContragent } from './actions'
@@ -71,6 +72,7 @@ export default function ContragentsClient({ initialContragents }: { initialContr
 
   // State for simple fields not in inputs
   const [selectedType, setSelectedType] = useState('Client')
+  const [status, setStatus] = useState('active')
   const [trustRating, setTrustRating] = useState('3')
   const [phones, setPhones] = useState<string[]>([])
   const [emails, setEmails] = useState<string[]>([])
@@ -281,7 +283,14 @@ export default function ContragentsClient({ initialContragents }: { initialContr
               </DialogHeader>
 
               <form action={formAction} className="p-0">
+                {state?.error && (
+                  <div className="bg-red-50 border border-red-200 text-red-700 p-4 mb-4 rounded-lg flex items-center gap-2 m-6">
+                    <XCircle className="w-5 h-5 flex-shrink-0" />
+                    <p className="text-sm font-medium">{state.error}</p>
+                  </div>
+                )}
                 <input type="hidden" name="type" value={selectedType} />
+                <input type="hidden" name="status" value={status} />
                 <input type="hidden" name="trustRating" value={trustRating} />
                 <input type="hidden" name="addresses" value={JSON.stringify(addresses)} />
                 <input type="hidden" name="bankAccounts" value={JSON.stringify(bankAccounts)} />
@@ -345,9 +354,9 @@ export default function ContragentsClient({ initialContragents }: { initialContr
                         <div className="space-y-2">
                           <Label className="text-slate-500 font-medium text-xs uppercase">Статус <span className="text-red-500">*</span></Label>
                           <Select
-                            options={[{ label: 'Активный', value: 'active' }, { label: 'Неактивный', value: 'inactive' }]}
-                            value="active"
-                            name="status"
+                            options={[{ label: 'Активный', value: 'active' }, { label: 'Неактивный', value: 'inactive' }, { label: 'На проверке', value: 'checking' }, { label: 'Заблокирован', value: 'blocked' }]}
+                            value={status}
+                            onValueChange={setStatus}
                           />
                         </div>
                         <div className="space-y-2">
