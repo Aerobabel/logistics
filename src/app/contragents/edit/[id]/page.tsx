@@ -2,6 +2,8 @@ import { notFound } from 'next/navigation'
 import EditContragentClient from './client'
 import { getContragentById } from '../../actions'
 
+export const dynamic = 'force-dynamic'
+
 type Props = {
     params: Promise<{ id: string }>
 }
