@@ -119,16 +119,21 @@ export async function updateContragent(id: number, prevState: any, formData: For
             } catch (e) { return undefined }
         }
 
+        const getStr = (key: string) => {
+            const val = formData.get(key) as string
+            return val && val.trim() !== '' ? val : null
+        }
+
         const rawData = {
             name: formData.get('name') as string,
             type: formData.get('type') as string,
             status: formData.get('status') as string || 'ACTIVE',
-            inn: formData.get('inn') as string,
-            kpp: formData.get('kpp') as string,
+            inn: getStr('inn'),
+            kpp: getStr('kpp'),
 
-            // Handle parsing like in create
-            phone: phoneStr && phoneStr.startsWith('[') ? JSON.parse(phoneStr)[0] : phoneStr,
-            email: emailStr && emailStr.startsWith('[') ? JSON.parse(emailStr)[0] : emailStr,
+            // Handle parsing like in create -- simplified logic if not array string
+            phone: getStr('phone'),
+            email: getStr('email'),
 
             trustRating: parseInt(formData.get('trustRating') as string || '3'),
 
@@ -145,9 +150,9 @@ export async function updateContragent(id: number, prevState: any, formData: For
         revalidatePath('/contragents')
         revalidatePath(`/contragents/${id}`)
         return { success: true, message: 'Counterparty updated successfully' }
-    } catch (error) {
+    } catch (error: any) {
         console.error('Update error:', error)
-        return { success: false, error: 'Failed to update contragent' }
+        return { success: false, error: error.message || 'Failed to update contragent' }
     }
 }
 

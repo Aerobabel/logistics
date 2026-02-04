@@ -58,6 +58,7 @@ export default function EditContragentClient({ contragent }: { contragent: any }
     // State management matching Create form logic
     const [selectedType, setSelectedType] = useState(contragent.type || 'Client')
     const [trustRating, setTrustRating] = useState(contragent.trustRating?.toString() || '3')
+    const [status, setStatus] = useState(contragent.status || 'ACTIVE')
     const [manager, setManager] = useState(contragent.manager || 'ivanov')
     const [edo, setEdo] = useState(contragent.edo || 'active')
     const [activeTab, setActiveTab] = useState('basic')
@@ -206,6 +207,7 @@ export default function EditContragentClient({ contragent }: { contragent: any }
             <form action={formAction} className="w-full max-w-[1200px] bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
                 {/* Hidden inputs to pass complex state */}
                 <input type="hidden" name="type" value={selectedType} />
+                <input type="hidden" name="status" value={status} />
                 <input type="hidden" name="trustRating" value={trustRating} />
                 <input type="hidden" name="phone" value={JSON.stringify(phones)} />
                 <input type="hidden" name="email" value={JSON.stringify(emails)} />
@@ -348,6 +350,20 @@ export default function EditContragentClient({ contragent }: { contragent: any }
                                                 </SelectContent>
                                             </Select>
                                             <input type="hidden" name="manager" value={manager} />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label>Статус</Label>
+                                            <Select value={status} onValueChange={setStatus}>
+                                                <SelectTrigger className="bg-slate-50">
+                                                    <SelectValue placeholder="Выберите статус" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="ACTIVE">Активный</SelectItem>
+                                                    <SelectItem value="INACTIVE">Неактивный</SelectItem>
+                                                    <SelectItem value="CHECKING">На проверке</SelectItem>
+                                                    <SelectItem value="BLOCKED">Заблокирован</SelectItem>
+                                                </SelectContent>
+                                            </Select>
                                         </div>
                                         <div className="space-y-2">
                                             <Label>ЭДО</Label>
