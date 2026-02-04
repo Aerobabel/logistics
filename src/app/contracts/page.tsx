@@ -1,18 +1,19 @@
-import { getContracts } from './actions'
+import { getContracts, getManagers } from './actions'
 import { getContragents } from '../contragents/actions'
 import ContractsClient from './contracts-client'
 
 export const dynamic = 'force-dynamic'
 
 export default async function ContractsPage() {
-  const [contractsData, contragents] = await Promise.all([
+  const [contractsData, contragents, managers] = await Promise.all([
     getContracts(),
-    getContragents()
+    getContragents(),
+    getManagers()
   ])
 
   const contracts = contractsData.map(c => ({
     ...c,
     date: c.date.toISOString()
   }))
-  return <ContractsClient initialContracts={contracts} contragents={contragents} />
+  return <ContractsClient initialContracts={contracts} contragents={contragents} managers={managers} />
 }

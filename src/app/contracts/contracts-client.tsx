@@ -36,9 +36,10 @@ type Contract = {
   counterparty: { name: string }
 }
 
-export default function ContractsClient({ initialContracts, contragents }: { initialContracts: Contract[], contragents: any[] }) {
+export default function ContractsClient({ initialContracts, contragents, managers }: { initialContracts: Contract[], contragents: any[], managers: any[] }) {
   const [state, formAction] = useActionState(createContract, null)
   const [selectedCounterparty, setSelectedCounterparty] = useState("")
+  const [selectedManager, setSelectedManager] = useState("")
 
   useEffect(() => {
     if (state?.success) {
@@ -111,7 +112,19 @@ export default function ContractsClient({ initialContracts, contragents }: { ini
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="manager">Менеджер</Label>
-                  <Input id="manager" name="manager" placeholder="Иванов И.И." />
+                  <input type="hidden" name="manager" value={selectedManager} />
+                  <Select value={selectedManager} onValueChange={setSelectedManager}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Выберите менеджера" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {managers.map((m) => (
+                        <SelectItem key={m.id} value={m.name}>
+                          {m.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
               <div className="flex gap-3">

@@ -28,6 +28,18 @@ export async function getContracts() {
   }
 }
 
+export async function getManagers() {
+  try {
+    return await prisma.manager.findMany({
+      where: { status: 'Active' },
+      orderBy: { name: 'asc' }
+    })
+  } catch (error) {
+    console.error('Failed to fetch managers:', error)
+    return []
+  }
+}
+
 export async function getContractById(id: number) {
   try {
     return await prisma.contract.findUnique({
