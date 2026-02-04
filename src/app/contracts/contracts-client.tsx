@@ -83,6 +83,10 @@ export default function ContractsClient({ initialContracts, contragents, manager
                   <Input id="amount" name="amount" type="number" required />
                 </div>
                 <div className="space-y-2">
+                  <Label htmlFor="amountTons">Вес (т)</Label>
+                  <Input id="amountTons" name="amountTons" type="number" placeholder="1000" />
+                </div>
+                <div className="space-y-2">
                   <Label htmlFor="status">Статус</Label>
                   <Input id="status" name="status" defaultValue="ACTIVE" />
                 </div>

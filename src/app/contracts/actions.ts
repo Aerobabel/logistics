@@ -119,7 +119,8 @@ export async function createContract(prevState: any, formData: FormData) {
         await prisma.manager.update({
           where: { id: manager.id },
           data: {
-            contractsCount: { increment: 1 }
+            contractsCount: { increment: 1 },
+            tonnage: { increment: rawData.amountTons || 0 }
           }
         })
       }
