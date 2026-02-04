@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import EditContragentClient from './client'
-import { getContragentById } from '../../actions'
+import { getContragentById, getManagers } from '../../actions'
 
 export const dynamic = 'force-dynamic'
 
@@ -14,9 +14,12 @@ export default async function EditContragentPage({ params }: Props) {
 
     if (isNaN(contragentId)) notFound()
 
-    const contragent = await getContragentById(contragentId)
+    const [contragent, managers] = await Promise.all([
+        getContragentById(contragentId),
+        getManagers()
+    ])
 
     if (!contragent) notFound()
 
-    return <EditContragentClient contragent={contragent} />
+    return <EditContragentClient contragent={contragent} managers={managers} />
 }

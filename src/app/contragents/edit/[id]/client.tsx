@@ -51,7 +51,7 @@ function TrustStars({ rating, setRating, readonly }: any) {
     )
 }
 
-export default function EditContragentClient({ contragent }: { contragent: any }) {
+export default function EditContragentClient({ contragent, managers }: { contragent: any, managers: any[] }) {
     const bindUpdate = updateContragent.bind(null, contragent.id)
     const [state, formAction] = useActionState(bindUpdate, null)
 
@@ -59,7 +59,7 @@ export default function EditContragentClient({ contragent }: { contragent: any }
     const [selectedType, setSelectedType] = useState(contragent.type || 'Client')
     const [trustRating, setTrustRating] = useState(contragent.trustRating?.toString() || '3')
     const [status, setStatus] = useState(contragent.status || 'ACTIVE')
-    const [manager, setManager] = useState(contragent.manager || 'ivanov')
+    const [manager, setManager] = useState(contragent.manager || (managers.length > 0 ? managers[0].name : ''))
     const [edo, setEdo] = useState(contragent.edo || 'active')
     const [activeTab, setActiveTab] = useState('basic')
 
@@ -345,8 +345,9 @@ export default function EditContragentClient({ contragent }: { contragent: any }
                                                     <SelectValue placeholder="Выберите менеджера" />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    <SelectItem value="ivanov">Иванов И.И.</SelectItem>
-                                                    <SelectItem value="petrov">Петров П.П.</SelectItem>
+                                                    {managers.map((m) => (
+                                                        <SelectItem key={m.id} value={m.name}>{m.name}</SelectItem>
+                                                    ))}
                                                 </SelectContent>
                                             </Select>
                                             <input type="hidden" name="manager" value={manager} />
