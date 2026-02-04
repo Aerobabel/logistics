@@ -77,7 +77,18 @@ export async function createContragent(prevState: any, formData: FormData) {
                 create: parseAndMap(addressesStr)
             },
             bankAccounts: {
-                create: parseAndMap(bankAccountsStr)
+                create: (() => {
+                    if (!bankAccountsStr) return undefined
+                    try {
+                        const arr = JSON.parse(bankAccountsStr)
+                        if (!Array.isArray(arr)) return undefined
+                        return arr.map(({ id, bic, currency, ...rest }: any) => ({
+                            ...rest,
+                            bik: bic, // Rename bic to bik
+                            // Remove currency as it is not in the schema
+                        }))
+                    } catch (e) { return undefined }
+                })()
             },
             employees: {
                 create: parseAndMap(employeesStr)
@@ -139,7 +150,20 @@ export async function updateContragent(id: number, prevState: any, formData: For
 
             // Complex objects
             addresses: parseAndMap(addressesStr),
-            bankAccounts: parseAndMap(bankAccountsStr),
+            bankAccounts: (() => {
+                if (!bankAccountsStr) return undefined
+                try {
+                    const arr = JSON.parse(bankAccountsStr)
+                    if (!Array.isArray(arr)) return undefined
+                    return {
+                        deleteMany: {},
+                        create: arr.map(({ id, bic, currency, ...rest }: any) => ({
+                            ...rest,
+                            bik: bic, // Rename bic to bik
+                        }))
+                    }
+                } catch (e) { return undefined }
+            })(),
             employees: parseAndMap(employeesStr),
             address: (() => {
                 try {
